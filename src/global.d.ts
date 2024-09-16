@@ -16,9 +16,17 @@ declare global {
     date: string;
   }
 
-  type DeviceData = {}
+  type DeviceData = {
+    id: number;
+    name: string;
+    online: boolean;
+  }
 
-  type TaskData = {}
+  type TaskData = {
+    name: string;
+    status: string;
+    id: number;
+  }
 
   type AppStateType = {
     notifications: Array<NotificationData>;
@@ -26,6 +34,7 @@ declare global {
     tasks: Array<TaskData>;
     isDialogOpen: boolean;
     isShowLast: boolean;
+    isStartUp: boolean;
   };
 
   type Action<Payload> = { type: string; payload: Payload };

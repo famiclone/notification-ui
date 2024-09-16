@@ -21,30 +21,39 @@ export class HTTPClient {
   // Get all tasks
   async getTasks() {
     const response = await fetch(`http://${this.baseUrl}/tasks/`);
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch tasks');
+    }
     return response.json();
   }
 
   // Get a specific task by task_id
   async getTaskById(taskId: string) {
     const response = await fetch(`http://${this.baseUrl}/tasks/${taskId}`);
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch task');
+    }
+
     return response.json();
   }
 
   // Update a specific task by task_id
-  async updateTask(taskId: string, taskData: object) {
-    const response = await fetch(`http://${this.baseUrl}/tasks/${taskId}`, {
+  async updateTask(taskId: number, status: string) {
+    const response = await fetch(`http://${this.baseUrl}/tasks/${taskId}?status=${status}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(taskData),
+      body: JSON.stringify(status),
     });
 
     return response.json();
   }
 
   // Delete a specific task by task_id
-  async deleteTask(taskId: string) {
+  async deleteTask(taskId: number) {
     const response = await fetch(`http://${this.baseUrl}/tasks/${taskId}`, {
       method: 'DELETE',
     });
@@ -55,6 +64,11 @@ export class HTTPClient {
   // Get all devices
   async getDevices() {
     const response = await fetch(`http://${this.baseUrl}/devices/`);
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch devices');
+    }
+
     return response.json();
   }
 

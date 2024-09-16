@@ -26,7 +26,7 @@ const Notifications = () => {
     </div>
 
     <div className="notification-block--float">
-      {state.isShowLast && state.notifications.length && (
+      {state.isShowLast && Boolean(state.notifications.length) && (
         <Notification data={state.notifications[state.notifications.length - 1]} onClose={() => {
           removeNotification(state.notifications[state.notifications.length - 1].id)
           setShowLast(false)

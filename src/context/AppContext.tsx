@@ -1,4 +1,5 @@
 import { createContext, useContext, useReducer } from "react";
+import { HTTPClient } from "../api/client";
 
 type AppContextType = {
   state: AppStateType;
@@ -9,6 +10,9 @@ type AppContextType = {
   setDialogOpen: (isOpen: boolean) => void;
   setShowLast: (bool: boolean) => void;
   playSound: () => void;
+  updateTask: (client: HTTPClient) => void;
+  deleteTask: (client: HTTPClient) => void;
+  closeStartUpDialog: () => void;
 }
 
 const AppContext = createContext({} as AppContextType);
@@ -20,6 +24,7 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
     tasks: [],
     isDialogOpen: false,
     isShowLast: false,
+    isStartUp: true
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -38,6 +43,8 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
         return { ...state, isDialogOpen: action.payload };
       case "SET_SHOW_LAST": 
         return { ...state, isShowLast: action.payload };
+      case "SET_STARTUP":
+        return { ...state, isStartUp: action.payload };
       default:
         return state;
     }
@@ -74,7 +81,28 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
 
   function playSound() {
     const audio = new Audio("assets/sound/notification.wav");
-    audio.play();
+    audio.play().catch(err => console.error(err));
+  }
+
+  function updateTask(client: HTTPClient) {
+    if (state.tasks.length === 0) return
+    const statusList = ['pending', 'in_progress', 'completed'];
+    const id = state.tasks[Math.floor(Math.random() * state.tasks.length)].id;
+    const status = statusList[Math.floor(Math.random() * statusList.length)];
+    
+    client.updateTask(id, status);
+  }
+
+  function deleteTask(client: HTTPClient) {
+    if (state.tasks.length === 0) return;
+    const id = state.tasks[Math.floor(Math.random() * state.tasks.length)].id;
+    console.log(id);
+
+    client.deleteTask(id);
+  }
+
+  function closeStartUpDialog() {
+    dispatch({ type: "SET_STARTUP", payload: false });
   }
 
   return <AppContext.Provider value={{
@@ -85,7 +113,10 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
     setTasks,
     setDialogOpen,
     setShowLast,
-    playSound
+    playSound,
+    updateTask,
+    deleteTask,
+    closeStartUpDialog
   }}>{children}</AppContext.Provider>;
 }
 

@@ -3,11 +3,10 @@ import { WSClient, HTTPClient } from "../../api/client";
 import { useAppContext } from "../../context/AppContext";
 import Header from "../Header"
 import ItemList from "../ItemList";
-import Notification from "../Notification";
 import NotifyDialog from "../NotifyDialog";
 
 const App = () => {
-  const { state, setNotifications, setDevices, setTasks, setDialogOpen, setShowLast, playSound } = useAppContext();
+  const { state, setNotifications, setDevices, setTasks, setDialogOpen, setShowLast, playSound, updateTask, deleteTask, closeStartUpDialog } = useAppContext();
   const [httpClient, setHttpClient] = useState<HTTPClient | null>(null);
 
   const handleMessage = useCallback((data: string) => {
@@ -16,16 +15,23 @@ const App = () => {
     setNotifications(parsedData);
     setShowLast(true);
     playSound();
-  }, [setNotifications]);
+  }, [setNotifications, playSound, setShowLast]);
 
   useEffect(() => {
+    if (state.isStartUp) {
+      return;
+    }
     const wsClient = new WSClient("localhost:5050", handleMessage);
     return () => {
       wsClient.ws.close();
     };
-  }, [handleMessage]);
+  }, []);
 
   useEffect(() => {
+    if (state.isStartUp) {
+      return;
+    }
+
     const client = new HTTPClient();
     setHttpClient(client);
 
@@ -48,27 +54,47 @@ const App = () => {
   }, []);
 
   return <div className="app-container">
-    <Header />
-    <main>
-      <div className="dashboard-container">
-        <ItemList items={state.devices} />
-        <ItemList items={state.tasks} />
-        <div className="empty"></div>
-      </div>
+    <dialog open={state.isStartUp}>
+      <h3>Warning</h3>
+      <p>You need to start the <a rel="noreferrer" target="_blank" href="https://github.com/99994433552/websockets-notify">server</a> first.</p>
+      <button className="button" onClick={closeStartUpDialog}>Server is running</button>
+    </dialog>
 
-      <NotifyDialog
-        isOpen={state.isDialogOpen}
-        onClose={() => setDialogOpen(false)}
-        onSubmit={async (e: React.FormEvent) => {
-          e.preventDefault();
-          const formData = new FormData(e.target as HTMLFormElement);
-          const message = formData.get("message") as string;
-          await httpClient?.sendMessage(message);
-          setDialogOpen(false);
-        }}
-      />
+    {!state.isStartUp && (
+      <>
+        <Header />
+        <main>
+          <div className="dashboard-container">
+            {httpClient && (
+              <div className="dashboard-container-left">
+                <ItemList items={state.devices} />
+                <div style={{ display: "flex", flexFlow: "column", gap: "1rem" }}>
+                  <ItemList items={state.tasks} />
+                  <div style={{ display: "flex", gap: "1rem" }}>
+                    <button className="button" onClick={() => updateTask(httpClient)}>Update Task</button>
+                    <button className="button" onClick={() => deleteTask(httpClient)}>Delete Task</button>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div className="empty"></div>
+          </div>
 
-    </main>
+          <NotifyDialog
+            isOpen={state.isDialogOpen}
+            onClose={() => setDialogOpen(false)}
+            onSubmit={async (e: React.FormEvent) => {
+              e.preventDefault();
+              const formData = new FormData(e.target as HTMLFormElement);
+              const message = formData.get("message") as string;
+              await httpClient?.sendMessage(message);
+              setDialogOpen(false);
+            }}
+          />
+
+        </main>
+      </>
+    )};
   </div>;
 };
 
