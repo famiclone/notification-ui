@@ -3,8 +3,7 @@
 ## Requirements
 
 Before running the project in Docker, ensure you have the following installed:
-
-	•	Docker (version 20.9.0 or higher)
+- Docker (version 20.9.0 or higher)
 
 Steps to Run the Project
 
