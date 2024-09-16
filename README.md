@@ -1,35 +1,40 @@
-## Available Scripts
+# notifications-ui
 
-In the project directory, you can run:
+## Requirements
 
-### `npm start`
+Before running the project in Docker, ensure you have the following installed:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+	•	Docker (version 20.9.0 or higher)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Steps to Run the Project
 
-### `npm run build`
+1. Clone the Repository
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Start by cloning the repository to your local machine:
+```sh
+git clone https://github.com/your-username/your-repo.git
+```
+Navigate to the project folder:
+```sh
+cd your-repo
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Build the Docker Image
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+In the project root, build the Docker image using the provided Dockerfile. This command will compile the project, create the production build, and prepare it for deployment using NGINX.
 
-### `npm run eject`
+Run the following command:
+```sh
+docker build -t your-app-name .
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+3. Run the Docker Container
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Once the image is built, you can run the container using the following command:
+```sh
+docker run -p 8080:80 your-app-name
+```
+Now, you can access the project by opening your browser and navigating to:
+```sh
+http://localhost:8080
+```
