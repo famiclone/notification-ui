@@ -4,7 +4,8 @@ type NotificationProps = {
 };
 
 const Notification = ({ data, onClose }: NotificationProps) => {
-  const validateUrl = (url: string, accept: string = ".*") => {
+  const validUrl = window.location.href;
+  const validateUrl = (url: string, accept: string = `${validUrl}.*`) => {
     const regex = new RegExp(accept);
     return regex.test(url);
   }
@@ -13,11 +14,10 @@ const Notification = ({ data, onClose }: NotificationProps) => {
     <div>
       <p>{data.message}</p>
       <div>
-        {
-          data.url && validateUrl(data.url) && <a href={data.url} target="_blank" rel="noreferrer">
-            {data.url}
-          </a>
-        }
+        {data.url && validateUrl(data.url) ? <a href={data.url} target="_blank" rel="noreferrer">{data.url}</a> : <i>[!] {data.url}</i>}
+      </div>
+      <div>
+        <small>{data.date}</small>
       </div>
     </div>
     <button className="button button--icon" onClick={onClose}>

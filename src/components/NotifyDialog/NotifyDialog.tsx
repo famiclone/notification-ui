@@ -6,14 +6,16 @@ type NotifyDialogProps = {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 };
 
-const initText = JSON.stringify({
+const initText = {
   type: "success",
-  message: "Message sent successfully to all devices! Thank you! If you have any questions, please let us know. We are here to help!",
-  id: Date.now().toString()
-});
+  message: "Message sent successfully to all devices! Thank you! If you have any questions, please let us know. We are here to help! Or you can visit our website for more information. Have a great day!",
+  id: "sd890fja0r",
+  url: "http://localhost:3000/sdfsdf/sdfdsfds",
+  date: "2024-09-16 08:36"
+};
 
 const NotifyDialog = ({ isOpen, onClose, onSubmit }: NotifyDialogProps) => {
-  const [message, setMessage] = useState(initText);
+  const [message, setMessage] = useState(JSON.stringify(initText));
 
   return (
     <dialog open={isOpen} style={{ minWidth: "450px" }}>
@@ -26,6 +28,7 @@ const NotifyDialog = ({ isOpen, onClose, onSubmit }: NotifyDialogProps) => {
       <form method="post" style={{ width: "100%" }} onSubmit={onSubmit}>
         <div><label htmlFor="name">Message:</label></div>
         <textarea id="message"
+          readOnly={true}
           onChange={(e) => setMessage(JSON.stringify(e.target))} value={message} name="message" required rows={5} style={{ width: "100%" }}
         ></textarea>
         <div>

@@ -3,16 +3,19 @@ import { WSClient, HTTPClient } from "../../api/client";
 import { useAppContext } from "../../context/AppContext";
 import Header from "../Header"
 import ItemList from "../ItemList";
+import Notification from "../Notification";
 import NotifyDialog from "../NotifyDialog";
 
 const App = () => {
-  const { state, setNotifications, setDevices, setTasks, setDialogOpen } = useAppContext();
+  const { state, setNotifications, setDevices, setTasks, setDialogOpen, setShowLast, playSound } = useAppContext();
   const [httpClient, setHttpClient] = useState<HTTPClient | null>(null);
 
   const handleMessage = useCallback((data: string) => {
     const parsedData = JSON.parse(data);
     parsedData.status = "UNREAD";
     setNotifications(parsedData);
+    setShowLast(true);
+    playSound();
   }, [setNotifications]);
 
   useEffect(() => {
@@ -64,8 +67,7 @@ const App = () => {
           setDialogOpen(false);
         }}
       />
-      <div>
-      </div>
+
     </main>
   </div>;
 };

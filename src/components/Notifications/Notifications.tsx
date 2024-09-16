@@ -3,7 +3,7 @@ import { useAppContext } from "../../context/AppContext";
 import Notification from "../Notification";
 
 const Notifications = () => {
-  const { state, removeNotification } = useAppContext();
+  const { state, removeNotification, setShowLast } = useAppContext();
   const [isShow, setIsShow] = useState(false);
   const isUnread = state.notifications.some(n => n.status === "UNREAD");
 
@@ -19,12 +19,19 @@ const Notifications = () => {
         {state.notifications.length === 0 && <div>
           <p>No notifications</p>
         </div>}
-        <div>
-          {state.notifications.map((n: NotificationData) => (
-            <Notification data={n} onClose={() => removeNotification(n.id)} />
-          ))}
-        </div>
+        {state.notifications.map((n: NotificationData) => (
+          <Notification data={n} onClose={() => removeNotification(n.id)} />
+        ))}
       </div>}
+    </div>
+
+    <div className="notification-block--float">
+      {state.isShowLast && state.notifications.length && (
+        <Notification data={state.notifications[state.notifications.length - 1]} onClose={() => {
+          removeNotification(state.notifications[state.notifications.length - 1].id)
+          setShowLast(false)
+        }} />
+      )}
     </div>
   </div>;
 };

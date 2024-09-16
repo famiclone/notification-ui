@@ -25,6 +25,7 @@ declare global {
     devices: Array<DeviceData>;
     tasks: Array<TaskData>;
     isDialogOpen: boolean;
+    isShowLast: boolean;
   };
 
   type Action<Payload> = { type: string; payload: Payload };

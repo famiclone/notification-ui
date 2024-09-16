@@ -2,11 +2,13 @@ import { createContext, useContext, useReducer } from "react";
 
 type AppContextType = {
   state: AppStateType;
-  removeNotification: (id: string) => void;
+  removeNotification: (id: string | null) => void;
   setNotifications: (data: NotificationData) => void;
   setDevices: (data: DeviceData[]) => void;
   setTasks: (data: TaskData[]) => void;
   setDialogOpen: (isOpen: boolean) => void;
+  setShowLast: (bool: boolean) => void;
+  playSound: () => void;
 }
 
 const AppContext = createContext({} as AppContextType);
@@ -16,7 +18,8 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
     notifications: [],
     devices: [],
     tasks: [],
-    isDialogOpen: false
+    isDialogOpen: false,
+    isShowLast: false,
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -30,16 +33,23 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
       case "SET_TASKS":
         return { ...state, tasks: action.payload };
       case "REMOVE_NOTIFICATION":
-        return { ...state, notifications: state.notifications.filter(n => n.id !== action.payload) };
+        return { ...state, notifications: action.payload };
       case "SET_DIALOG_OPEN":
         return { ...state, isDialogOpen: action.payload };
+      case "SET_SHOW_LAST": 
+        return { ...state, isShowLast: action.payload };
       default:
         return state;
     }
   }
 
-  function removeNotification(id: string) {
-    dispatch({ type: "REMOVE_NOTIFICATION", payload: id });
+  function removeNotification(id: string | null) {
+    if (!id) {
+      return;
+    }
+
+    const notifications = state.notifications.filter((n: NotificationData) => n.id !== id);
+    dispatch({ type: "REMOVE_NOTIFICATION", payload: notifications });
   }
 
   function setNotifications(data: NotificationData) {
@@ -58,13 +68,24 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
     dispatch({ type: "SET_DIALOG_OPEN", payload: isOpen });
   }
 
+  function setShowLast(bool: boolean) {
+    dispatch({ type: "SET_SHOW_LAST", payload: bool});
+  }
+
+  function playSound() {
+    const audio = new Audio("assets/sound/notification.wav");
+    audio.play();
+  }
+
   return <AppContext.Provider value={{
     state,
     removeNotification,
     setNotifications,
     setDevices,
     setTasks,
-    setDialogOpen
+    setDialogOpen,
+    setShowLast,
+    playSound
   }}>{children}</AppContext.Provider>;
 }
 

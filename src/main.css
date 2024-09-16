@@ -111,6 +111,16 @@ dialog {
   transform: translateY(0.25rem);
   box-shadow: 1;
   padding: 0.5rem;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.notification-block--float {
+  position: fixed;
+  left: 50%;
+  top: 3rem;
+  transform: translateX(-50%);
+  width: 30%;
 }
 
 .notification {
