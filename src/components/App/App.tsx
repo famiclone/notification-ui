@@ -25,7 +25,7 @@ const App = () => {
     return () => {
       wsClient.ws.close();
     };
-  }, []);
+  }, [state.isStartUp]);
 
   useEffect(() => {
     if (state.isStartUp) {
@@ -51,7 +51,7 @@ const App = () => {
     return () => {
       clearInterval(i);
     };
-  }, []);
+  }, [state.isStartUp]);
 
   return <div className="app-container">
     <dialog open={state.isStartUp}>
